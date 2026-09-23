@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Interactive handbook on self-improving AI agents: inference-time scaling, verifiers, planning, tool use, RL, search, evaluation, continual learning and future research.">
+<meta name="theme-color" content="#06111b">
+<title>Self-Improving AI Agents — Interactive Handbook</title>
+<style>
+:root{--bg:#06111b;--panel:#0b1a28;--panel2:#10263a;--text:#edf6ff;--muted:#9fb5c8;--line:#1d3850;--a:#7df3d0;--b:#78a8ff;--c:#ffad7a;--shadow:0 18px 60px rgba(0,0,0,.28);--max:1180px}
+[data-theme="light"]{--bg:#f5f8fb;--panel:#fff;--panel2:#edf4fa;--text:#0d1b28;--muted:#5c7082;--line:#d7e2eb;--a:#087d68;--b:#2f66c9;--c:#b85b28;--shadow:0 18px 60px rgba(31,50,69,.12)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-x:hidden}
+a{color:inherit}.container{width:min(var(--max),calc(100% - 40px));margin:auto}.top{position:fixed;inset:0 0 auto;z-index:50;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.nav{height:68px;display:flex;align-items:center;gap:22px}.brand{font-weight:800;text-decoration:none;display:flex;align-items:center;gap:10px;white-space:nowrap}.brand i{width:28px;height:28px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--a),var(--b));color:#051018;font-style:normal}.links{display:flex;gap:16px;overflow:auto;scrollbar-width:none;margin-left:auto}.links a{text-decoration:none;color:var(--muted);font-size:13px;white-space:nowrap}.links a:hover{color:var(--text)}.icon{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:10px;padding:8px 10px;cursor:pointer}
+.progress{position:fixed;z-index:70;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--a),var(--b),var(--c));width:0}
+.hero{padding:150px 0 80px;position:relative;min-height:92vh;display:grid;align-items:center;overflow:hidden}.hero:before{content:"";position:absolute;width:800px;height:800px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--b) 22%,transparent),transparent 64%);right:-280px;top:-180px;filter:blur(10px)}.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:60px;align-items:center;position:relative}.eyebrow{display:inline-flex;border:1px solid var(--line);background:var(--panel);padding:6px 10px;border-radius:999px;color:var(--a);font-size:12px;text-transform:uppercase;letter-spacing:.12em;font-weight:800}.hero h1{font-size:clamp(52px,7vw,96px);line-height:.95;letter-spacing:-.055em;margin:22px 0}.grad{background:linear-gradient(90deg,var(--a),var(--b),var(--c));-webkit-background-clip:text;color:transparent}.hero p{font-size:19px;color:var(--muted);max-width:760px}.actions{display:flex;gap:12px;flex-wrap:wrap;margin:26px 0}.btn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;border:1px solid var(--line);border-radius:12px;padding:11px 15px;background:var(--panel);font-weight:700}.btn.primary{background:var(--text);color:var(--bg)}.stats{display:flex;gap:10px;flex-wrap:wrap}.stat{padding:10px 12px;border-radius:12px;background:var(--panel);border:1px solid var(--line)}.stat b{display:block;font-size:20px}.stat small{color:var(--muted)}
+.orbit{height:520px;position:relative;display:grid;place-items:center}.core{width:145px;height:145px;border-radius:50%;display:grid;place-items:center;text-align:center;background:linear-gradient(135deg,color-mix(in srgb,var(--a) 24%,var(--panel)),color-mix(in srgb,var(--b) 24%,var(--panel)));border:1px solid color-mix(in srgb,var(--a) 50%,var(--line));box-shadow:0 0 80px color-mix(in srgb,var(--a) 14%,transparent);font-weight:900}.ring{position:absolute;border:1px solid var(--line);border-radius:50%;animation:spin 28s linear infinite}.r1{width:330px;height:330px}.r2{width:460px;height:460px;animation-direction:reverse;animation-duration:42s}.node{position:absolute;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:color-mix(in srgb,var(--panel) 91%,transparent);font-size:12px;box-shadow:var(--shadow);animation:float 4s ease-in-out infinite}.n1{top:22px;left:175px}.n2{top:105px;right:15px}.n3{bottom:85px;right:30px}.n4{bottom:15px;left:185px}.n5{bottom:115px;left:5px}.n6{top:110px;left:12px}.node b{color:var(--a);font-size:13px}@keyframes spin{to{transform:rotate(360deg)}}@keyframes float{50%{transform:translateY(-7px)}}
+section{padding:88px 0;border-top:1px solid var(--line)}.section-head{display:flex;justify-content:space-between;gap:30px;align-items:end;margin-bottom:32px}.kicker{color:var(--a);text-transform:uppercase;letter-spacing:.14em;font-size:12px;font-weight:800}.section-head h2{font-size:clamp(34px,5vw,62px);line-height:1;letter-spacing:-.04em;margin:10px 0}.lede{max-width:650px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.grid.two{grid-template-columns:repeat(2,1fr)}.card{background:linear-gradient(180deg,var(--panel),color-mix(in srgb,var(--panel2) 72%,var(--panel)));border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:var(--shadow)}.card h3{margin:0 0 8px}.card p{color:var(--muted)}.tag{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px 8px;color:var(--muted);font-size:11px;margin:2px}
+.flow{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:28px 0}.flow div{padding:16px 12px;text-align:center;border-radius:14px;border:1px solid var(--line);background:var(--panel);position:relative}.flow div:not(:last-child):after{content:"→";position:absolute;right:-12px;top:50%;transform:translateY(-50%);color:var(--a);z-index:2}
+.diagram{border:1px solid var(--line);border-radius:20px;background:var(--panel);padding:20px;overflow:hidden}.diagram svg{display:block;width:100%;height:auto}.svgbox{fill:var(--panel2);stroke:var(--line);stroke-width:1.5}.svgtext{fill:var(--text);font:700 15px system-ui}.svgmuted{fill:var(--muted);font:500 12px system-ui}.svga{stroke:var(--a);fill:none;stroke-width:2}.svgb{stroke:var(--b);fill:none;stroke-width:2}
+.lab{display:grid;grid-template-columns:360px 1fr;gap:20px;align-items:stretch}.controls{display:grid;gap:18px}.control label{display:flex;justify-content:space-between;font-weight:700}.control small{color:var(--muted)}input[type=range]{width:100%;accent-color:var(--a)}.metric{font-size:52px;font-weight:900;letter-spacing:-.05em}.formula{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--bg);border:1px solid var(--line);padding:10px 12px;border-radius:10px;color:var(--a);overflow:auto}
+.chart{min-height:300px;display:grid;place-items:center}.bar-wrap{width:100%;display:flex;align-items:end;gap:7px;height:240px;border-left:1px solid var(--line);border-bottom:1px solid var(--line);padding:12px}.bar{flex:1;background:linear-gradient(180deg,var(--a),var(--b));border-radius:6px 6px 0 0;min-width:5px;transition:.25s}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}.tab{padding:8px 11px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--muted);cursor:pointer}.tab.active{background:var(--text);color:var(--bg)}.tab-panel{display:none}.tab-panel.active{display:block}
+.table{width:100%;border-collapse:collapse;font-size:14px}.table th,.table td{padding:12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}.table th{color:var(--muted)}
+.searchbar{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}.searchbar input,.searchbar select{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:11px;padding:11px 12px}.searchbar input{flex:1;min-width:220px}.paper-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.paper{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px}.paper h3{font-size:16px;margin:0}.paper p{font-size:13px;color:var(--muted);margin:0}.paper a{margin-top:auto;color:var(--a);text-decoration:none;font-weight:700;font-size:13px}
+.video-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.video{border:1px solid var(--line);background:var(--panel);border-radius:16px;overflow:hidden;cursor:pointer;padding:0;text-align:left;color:var(--text)}.video img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}.video span{display:block;padding:14px}.video b{display:block}.video small{color:var(--muted)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.72);display:none;z-index:100;place-items:center;padding:20px}.modal.open{display:grid}.modal-card{width:min(1000px,96vw);background:#000;border-radius:18px;overflow:hidden;border:1px solid #333}.modal-top{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#101010;color:white}.player{aspect-ratio:16/9}.player iframe{width:100%;height:100%;border:0}
+.callout{border-left:3px solid var(--a);padding:14px 18px;background:color-mix(in srgb,var(--a) 7%,var(--panel));border-radius:0 12px 12px 0;color:var(--muted)}.future-list{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.future-item{padding:18px;border:1px solid var(--line);border-radius:14px;background:var(--panel)}.future-item b{color:var(--a)}
+footer{padding:50px 0;border-top:1px solid var(--line);color:var(--muted)}.footer-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px}.reveal{opacity:0;transform:translateY(16px);transition:.6s ease}.reveal.on{opacity:1;transform:none}
+@media(max-width:900px){.hero-grid,.lab,.grid,.grid.two,.paper-grid,.video-grid,.future-list,.footer-grid{grid-template-columns:1fr}.orbit{height:420px;transform:scale(.84)}.section-head{display:block}.flow{grid-template-columns:1fr 1fr 1fr}.links{display:none}.hero{padding-top:120px}.grid{gap:12px}.paper-grid,.video-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:620px){.container{width:min(var(--max),calc(100% - 24px))}.hero h1{font-size:54px}.flow{grid-template-columns:1fr}.flow div:not(:last-child):after{content:"↓";right:50%;top:auto;bottom:-17px;transform:translateX(50%)}.paper-grid,.video-grid{grid-template-columns:1fr}.orbit{height:360px;transform:scale(.68);margin:-30px 0}.metric{font-size:42px}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<header class="top">
+  <div class="container nav">
+    <a class="brand" href="#top"><i>∞</i> Self-Improving AI Agents</a>
+    <nav class="links">
+      <a href="#map">Map</a><a href="#scaling">Scaling</a><a href="#verification">Verification</a><a href="#agents">Agents</a><a href="#planning">Planning</a><a href="#training">RL</a><a href="#search">Search</a><a href="#evaluation">Evaluation</a><a href="#future">Future</a><a href="#papers">Papers</a><a href="#videos">Videos</a>
+    </nav>
+    <button class="icon" id="theme">◐</button>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="reveal">
+      <span class="eyebrow">Interactive Research Handbook</span>
+      <h1>Self-Improving<br><span class="grad">AI Agents</span></h1>
+      <p>A systems-level guide to inference-time scaling, verifiers, planning, tool use, reinforcement learning, search, evaluation, open-ended exploration, continual learning, and the infrastructure connecting them.</p>
+      <div class="actions">
+        <a class="btn primary" href="#map">Explore the field →</a>
+        <a class="btn" href="#papers">Primary papers</a>
+        <a class="btn" href="https://cs329a.stanford.edu/" target="_blank" rel="noopener">Stanford CS329A ↗</a>
+      </div>
+      <div class="stats"><div class="stat"><b>30+</b><small>research links</small></div><div class="stat"><b>9</b><small>lecture videos</small></div><div class="stat"><b>3</b><small>interactive labs</small></div><div class="stat"><b>1</b><small>unified framework</small></div></div>
+    </div>
+    <div class="orbit reveal">
+      <div class="ring r1"></div><div class="ring r2"></div><div class="core">Adaptive<br>Agent</div>
+      <div class="node n1"><b>Explore</b><br>sampling · search</div>
+      <div class="node n2"><b>Verify</b><br>tests · judges</div>
+      <div class="node n3"><b>Act</b><br>tools · code</div>
+      <div class="node n4"><b>Learn</b><br>SFT · RL</div>
+      <div class="node n5"><b>Plan</b><br>trees · DAGs</div>
+      <div class="node n6"><b>Evaluate</b><br>horizon · utility</div>
+    </div>
+  </div>
+</section>
+
+<section id="map">
+<div class="container">
+  <div class="section-head"><div><span class="kicker">00 · Field map</span><h2>From model scaling to adaptive systems</h2></div><p class="lede">The course arc is best understood as a shift from improving a model once, to building a system that repeatedly explores, verifies, acts, learns, and evaluates.</p></div>
+  <div class="flow reveal"><div>Pretrain<br><small>capability</small></div><div>Post-train<br><small>alignment</small></div><div>Scale inference<br><small>search</small></div><div>Verify<br><small>feedback</small></div><div>Act<br><small>tools</small></div><div>Learn again<br><small>RL / SFT</small></div></div>
+  <div class="grid reveal">
+    <article class="card"><h3>Search discovers</h3><p>Sampling, tree search, parallel reasoning, retrieval, and multi-agent exploration expose solutions the model may already be capable of producing.</p><span class="tag">pass@K</span><span class="tag">MCTS</span><span class="tag">ReAct</span></article>
+    <article class="card"><h3>Verification selects</h3><p>Tests, outcome reward models, process reward models, LLM judges, formal tools, and ensembles determine which trajectories deserve trust.</p><span class="tag">ORM</span><span class="tag">PRM</span><span class="tag">Weaver</span></article>
+    <article class="card"><h3>Learning internalizes</h3><p>SFT and reinforcement learning move probability mass toward successful behaviors so expensive search can become cheaper pass-at-one competence.</p><span class="tag">STaR</span><span class="tag">GRPO</span><span class="tag">DAPO</span></article>
+  </div>
+</div>
+</section>
+
+<section id="scaling">
+<div class="container">
+  <div class="section-head"><div><span class="kicker">01 · Inference-time scaling</span><h2>A new frontier for scaling is inference</h2></div><p class="lede">Once a model is trained, performance can still improve by allocating more compute to the problem itself: more candidates, deeper search, verification, revision, and tools.</p></div>
+  <div class="diagram reveal">
+    <svg viewBox="0 0 1000 310" role="img" aria-label="Three scaling axes">
+      <rect x="40" y="85" width="240" height="120" rx="22" class="svgbox"/><text x="160" y="135" text-anchor="middle" class="svgtext">Pretraining</text><text x="160" y="164" text-anchor="middle" class="svgmuted">parameters · data · compute</text>
+      <rect x="380" y="85" width="240" height="120" rx="22" class="svgbox"/><text x="500" y="135" text-anchor="middle" class="svgtext">Post-training</text><text x="500" y="164" text-anchor="middle" class="svgmuted">SFT · preference learning · RL</text>
+      <rect x="720" y="65" width="240" height="160" rx="22" class="svgbox"/><text x="840" y="125" text-anchor="middle" class="svgtext">Inference</text><text x="840" y="154" text-anchor="middle" class="svgmuted">sample · search · verify · revise</text><circle cx="840" cy="145" r="105" class="svga" opacity=".55"/>
+      <path d="M280 145H380M620 145H720" class="svgb"/><path d="M370 139l10 6-10 6M710 139l10 6-10 6" fill="var(--b)"/>
+      <text x="500" y="275" text-anchor="middle" class="svgmuted">The system can spend much more compute after weights are frozen.</text>
+    </svg>
+  </div>
+  <div class="lab reveal" style="margin-top:20px">
+    <div class="card controls">
+      <h3>Pass@K laboratory</h3>
+      <div class="control"><label>Single-attempt success <span id="pVal">5%</span></label><input id="pRange" type="range" min="1" max="50" value="5"><small>Probability p that one independent sample succeeds.</small></div>
+      <div class="control"><label>Samples K <span id="kVal">20</span></label><input id="kRange" type="range" min="1" max="100" value="20"><small>More samples increase the chance of at least one success.</small></div>
+      <div><div class="metric" id="passMetric">64.2%</div><div class="formula">P(pass@K) = 1 − (1 − p)^K</div></div>
+    </div>
+    <div class="card chart"><div class="bar-wrap" id="passBars"></div></div>
+  </div>
+  <div class="grid reveal" style="margin-top:16px">
+    <article class="card"><h3>Large Language Monkeys</h3><p>Repeated sampling reveals a long tail of problems that are rarely solved in one attempt but become solvable at larger sample budgets.</p><a href="https://arxiv.org/abs/2407.21787" target="_blank" rel="noopener">Paper ↗</a></article>
+    <article class="card"><h3>Optimal test-time compute</h3><p>Compute can be distributed across parallel sampling, sequential revision, verifier calls, and search depth rather than blindly increasing N.</p><a href="https://arxiv.org/abs/2408.03314" target="_blank" rel="noopener">Paper ↗</a></article>
+    <article class="card"><h3>Archon</h3><p>Inference architecture itself becomes a search space: generators, rankers, critics, fusion, and unit-test generation can be composed and optimized.</p><a href="https://arxiv.org/abs/2409.15254" target="_blank" rel="noopener">Paper ↗</a></article>
+  </div>
+</div>
+</section>
+
+<section id="verification">
+<div class="container">
+  <div class="section-head"><div><span class="kicker">02 · Verification</span><h2>The generation–verification gap</h2></div><p class="lede">Generating a correct answer somewhere in a sample set is not enough. The system must recognize it reliably.</p></div>
+  <div class="grid two reveal">
+    <article class="card"><h3>Outcome Reward Model (ORM)</h3><p>Scores the final solution. Cheap when final answers are automatically checkable, but sparse: a flawed derivation can get lucky, while an almost-correct derivation can receive zero reward.</p><div class="formula">trajectory → final answer → reward</div></article>
+    <article class="card"><h3>Process Reward Model (PRM)</h3><p>Scores intermediate reasoning steps. Dense supervision helps prune bad branches early and can guide search before the full trajectory is complete.</p><div class="formula">s₁→r₁, s₂→r₂, …, sₙ→rₙ</div></article>
+  </div>
+  <div class="diagram reveal" style="margin-top:16px">
+    <svg viewBox="0 0 1000 290">
+      <text x="60" y="50" class="svgtext">Verification evolution</text>
+      <rect x="50" y="100" width="190" height="90" rx="18" class="svgbox"/><text x="145" y="135" text-anchor="middle" class="svgtext">Final answer</text><text x="145" y="160" text-anchor="middle" class="svgmuted">ORM</text>
+      <rect x="300" y="100" width="190" height="90" rx="18" class="svgbox"/><text x="395" y="135" text-anchor="middle" class="svgtext">Step labels</text><text x="395" y="160" text-anchor="middle" class="svgmuted">PRM800K</text>
+      <rect x="550" y="100" width="190" height="90" rx="18" class="svgbox"/><text x="645" y="135" text-anchor="middle" class="svgtext">Auto labels</text><text x="645" y="160" text-anchor="middle" class="svgmuted">Math-Shepherd</text>
+      <rect x="800" y="100" width="150" height="90" rx="18" class="svgbox"/><text x="875" y="135" text-anchor="middle" class="svgtext">Ensemble</text><text x="875" y="160" text-anchor="middle" class="svgmuted">Weaver</text>
+      <path d="M240 145H300M490 145H550M740 145H800" class="svga"/>
+    </svg>
+  </div>
+  <div class="grid reveal" style="margin-top:16px">
+    <article class="card"><h3>Training verifiers</h3><p>Early verifier work on GSM8K showed that discriminating among model solutions can improve final answer selection.</p><a href="https://arxiv.org/abs/2110.14168" target="_blank" rel="noopener">Paper ↗</a></article>
+    <article class="card"><h3>PRM800K</h3><p>Human process supervision evaluates individual reasoning steps instead of only final outcomes.</p><a href="https://arxiv.org/abs/2305.20050" target="_blank" rel="noopener">Paper ↗</a></article>
+    <article class="card"><h3>Math-Shepherd & Weaver</h3><p>Automated step-level labels reduce annotation cost; verifier ensembles aim to combine weak judges and distill them into efficient evaluators.</p><a href="https://arxiv.org/abs/2312.08935" target="_blank" rel="noopener">Math-Shepherd ↗</a> · <a href="https://arxiv.org/abs/2506.18203" target="_blank" rel="noopener">Weaver ↗</a></article>
+  </div>
+</div>
+</section>
+
+<section id="agents">
+<div class="container">
+  <div class="section-head"><div><span class="kicker">03 · Agentic feedback loops</span><h2>Reason, act, observe, revise</h2></div><p class="lede">Agents extend language models with environments. Tools and execution turn external consequences into feedback that can improve the current trajectory or future policy.</p></div>
+  <div class="flow reveal"><div>Reason</div><div>Act</div><div>Observe</div><div>Evaluate</div><div>Revise</div><div>Continue</div></div>
+  <div class="grid reveal">
+    <article class="card"><h3>ReAct</h3><p>Interleaves reasoning with actions and observations so the model can ground decisions in external evidence rather than completing a full chain entirely from memory.</p><a href="https://arxiv.org/abs/2210.03629" target="_blank" rel="noopener">Paper ↗</a></article>
+    <article class="card"><h3>RLEF</h3><p>Reinforcement Learning from Execution Feedback turns code execution and unit tests into rewards: generate → run → test → reward → update.</p><a href="https://arxiv.org/abs/2410.02089" target="_blank" rel="noopener">Paper ↗</a></article>
+    <article class="card"><h3>Constitutional AI</h3><p>Human-authored principles guide AI critique and revision, creating scalable preference signals without requiring a human label on every response.</p><a href="https://arxiv.org/abs/2212.08073" target="_blank" rel="noopener">Paper ↗</a></article>
+  </div>
+  <p class="callout reveal" style="margin-top:16px"><b>Key idea:</b> self-improvement is only as good as its feedback channel. Code offers executable feedback; open-ended reasoning requires much weaker and more contestable evaluators.</p>
+</div>
+</section>
+
+<section id="planning">
+<div class="container">
+  <div class="section-head"><div><span class="kicker">04 · Planning & multi-step reasoning</span><h2>Reasoning as controlled search</h2></div><p class="lede">Planning changes the agent from a single trajectory generator into a controller that can explore alternatives, branch, backtrack, parallelize, and learn multi-step tool behavior.</p></div>
+  <div class="tabs reveal" id="planTabs"><button class="tab active" data-tab="lats">LATS</button><button class="tab" data-tab="sprint">SPRINT</button><button class="tab" data-tab="swirl">SWiRL</button></div>
+  <div class="card tab-panel active" id="lats"><h3>LATS — Language Agent Tree Search</h3><p>MCTS combines reasoning, acting, self-reflection, and LLM-based scoring. Branches represent alternative actions or thoughts; promising branches receive more compute.</p><div class="formula">state → {branch A, branch B, branch C} → score → expand → backtrack</div><a href="https://arxiv.org/abs/2310.04406" target="_blank" rel="noopener">Primary paper ↗</a></div>
+  <div class="card tab-panel" id="sprint"><h3>SPRINT — Parallel reasoning plans</h3><p>Decomposes reasoning into independent plans that can be executed in parallel, reducing the sequential token path when the task admits useful decomposition.</p><div class="formula">problem → {plan₁ ∥ plan₂ ∥ plan₃ ∥ plan₄} → aggregate</div><a href="https://arxiv.org/abs/2506.05745" target="_blank" rel="noopener">Primary paper ↗</a></div>
+  <div class="card tab-panel" id="swirl"><h3>SWiRL — Synthetic tool trajectories</h3><p>Generates and filters synthetic multi-step tool-use trajectories, then trains policies to internalize useful action patterns without live execution in every training rollout.</p><div class="formula">synthetic trajectories → filter → RL → tool-use policy</div><a href="https://arxiv.org/abs/2504.04736" target="_blank" rel="noopener">Primary paper ↗</a></div>
+  <div class="callout reveal" style="margin-top:16px"><b>Irreversible actions matter.</b> Search is cheap in simulation but dangerous when actions send money, delete files, message people, or modify production systems. Real agents need approval gates, rollback, simulation, and stronger verification at commitment boundaries.</div>
+</div>
+</section>
+
+<section id="training">
+<div class="container">
+  <div class="section-head"><div><span class="kicker">05 · Train-time scaling</span><h2>Search discovers; training internalizes</h2></div><p class="lede">The next loop uses expensive sampling and verification to produce better data, then updates the model so successful behaviors become more likely on the first try.</p></div>
+  <div class="flow reveal"><div>Sample</div><div>Verify</div><div>Filter</div><div>Fine-tune / RL</div><div>Stronger model</div><div>Repeat</div></div>
+  <div class="grid reveal">
+    <article class="card"><h3>STaR</h3><p>Self-Taught Reasoner bootstraps rationales from question-answer data, retaining successful reasoning and iteratively fine-tuning the model.</p><a href="https://arxiv.org/abs/2203.14465" target="_blank" rel="noopener">Paper ↗</a></article>
+    <article class="card"><h3>DeepSeekMath / GRPO</h3><p>Group Relative Policy Optimization compares rewards among several responses to the same prompt, avoiding a separate critic/value model.</p><div class="formula">Aᵢ ≈ (rᵢ − mean(r)) / std(r)</div><a href="https://arxiv.org/abs/2402.03300" target="_blank" rel="noopener">Paper ↗</a></article>
+    <article class="card"><h3>DAPO</h3><p>Addresses long-reasoning RL instability with asymmetric clipping, dynamic sampling, token-level loss, and techniques designed to preserve useful exploration.</p><a href="https://arxiv.org/abs/2503.14476" target="_blank" rel="noopener">Paper ↗</a></article>
+  </div>
+  <div class="grid two reveal" style="margin-top:16px">
+    <article class="card"><h3>Pass@K vs Majority@K</h3><p>RL may dramatically increase how often the model uses an already-known successful strategy without expanding the frontier of what it can ever solve. Majority@K can rise while pass@K moves much less.</p></article>
+    <article class="card"><h3>Reward diversity</h3><p>If every sampled response gets reward 0—or every response gets reward 1—the batch provides almost no relative learning signal. Dynamic sampling seeks prompts with informative reward variation.</p></article>
+  </div>
+</div>
+</section>
+
+<section id="search">
+<div class="container">
+  <div class="section-head"><div><span class="kicker">06 · Search-based intelligence</span><h2>Search over solutions and information</h2></div><p class="lede">AlphaCode searches candidate programs; deep research agents search the external knowledge space. Both follow the same systems pattern: explore → score → prune → continue.</p></div>
+  <table class="table reveal">
+    <thead><tr><th>Competitive coding</th><th>Deep research</th></tr></thead>
+    <tbody><tr><td>Generate many programs</td><td>Generate search queries / retrieve sources</td></tr><tr><td>Compile, test, filter</td><td>Judge relevance and evidence quality</td></tr><tr><td>Cluster for diversity</td><td>Extract targeted document chunks</td></tr><tr><td>Rank candidate solutions</td><td>Integrate evidence into reasoning</td></tr><tr><td>Submit promising programs</td><td>Continue reasoning or search again</td></tr></tbody>
+  </table>
+  <div class="grid reveal" style="margin-top:16px">
+    <article class="card"><h3>AlphaCode</h3><p>Massive sampling plus filtering and clustering made competitive-programming search effective; diversity among final candidates was essential.</p><a href="https://arxiv.org/abs/2203.07814" target="_blank" rel="noopener">Paper ↗</a></article>
+    <article class="card"><h3>AlphaCode 2</h3><p>Stronger models and learned candidate scoring reduced dependence on brute-force sampling and made selection more compute-efficient.</p><a href="https://storage.googleapis.com/deepmind-media/AlphaCode2/AlphaCode2_Tech_Report.pdf" target="_blank" rel="noopener">Technical report ↗</a></article>
+    <article class="card"><h3>Search-o1 / Search-R1</h3><p>Retrieval becomes an action inside reasoning. Search-R1 pushes further by learning when to search rather than relying only on prompted heuristics.</p><a href="https://arxiv.org/abs/2501.05366" target="_blank" rel="noopener">Search-o1 ↗</a> · <a href="https://arxiv.org/abs/2503.09516" target="_blank" rel="noopener">Search-R1 ↗</a></article>
+  </div>
+</div>
+</section>
+
+<section id="evaluation">
+<div class="container">
+  <div class="section-head"><div><span class="kicker">07 · Evaluation</span><h2>From benchmark scores to reliable work</h2></div><p class="lede">The frontier shifts from “can the model answer this?” to “can the agent complete an extended piece of valuable work reliably?”</p></div>
+  <div class="lab reveal">
+    <div class="card controls">
+      <h3>Long-horizon reliability</h3>
+      <div class="control"><label>Per-step reliability <span id="stepVal">98%</span></label><input id="stepRange" type="range" min="80" max="100" value="98" step=".1"></div>
+      <div class="control"><label>Critical steps <span id="stepsVal">100</span></label><input id="stepsRange" type="range" min="1" max="300" value="100"></div>
+      <div><div class="metric" id="horizonMetric">13.3%</div><div class="formula">P(overall) ≈ pⁿ</div></div>
+    </div>
+    <div class="card">
+      <h3>Why long tasks are hard</h3>
+      <p>Even high local competence can collapse over many dependent actions. This is why task duration, recovery, state tracking, tool choice, and stopping policies become first-class evaluation targets.</p>
+      <div id="riskMeter" style="height:24px;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--bg)"><div id="riskFill" style="height:100%;width:13%;background:linear-gradient(90deg,var(--c),var(--a));transition:.25s"></div></div>
+      <p class="callout" style="margin-top:18px">A rare success demonstrates capability. Repeated high-probability success begins to justify delegation.</p>
+    </div>
+  </div>
+  <div class="grid reveal" style="margin-top:16px">
+    <article class="card"><h3>METR time horizon</h3><p>Measures what duration of human-professional task an agent can complete at a given success threshold.</p><a href="https://arxiv.org/abs/2503.14499" target="_blank" rel="noopener">Paper ↗</a></article>
+    <article class="card"><h3>GDPval</h3><p>Moves evaluation toward economically meaningful professional work across occupations and sectors, where ambiguity, context, formatting, and judgment matter.</p><a href="https://arxiv.org/abs/2510.04374" target="_blank" rel="noopener">Paper ↗</a></article>
+    <article class="card"><h3>DeepScholar-Bench</h3><p>Research synthesis exposes failures in retrieval coverage, fact extraction, citation support, and multi-source synthesis—areas without simple unit tests.</p><a href="https://arxiv.org/abs/2508.20033" target="_blank" rel="noopener">Paper ↗</a></article>
+  </div>
+</div>
+</section>
+
+<section id="future">
+<div class="container">
+  <div class="section-head"><div><span class="kicker">08 · Future research</span><h2>Beyond fixed self-improvement loops</h2></div><p class="lede">Future systems must improve diversity, verification, task selection, continual learning, compute allocation, and efficiency—not merely scale one component.</p></div>
+  <div class="future-list reveal">
+    <div class="future-item"><b>Reasoning diversity</b><br>Multi-agent generators, critics, debaters, and specialists can reduce correlated failure and preserve exploration.</div>
+    <div class="future-item"><b>Meta-verification</b><br>Agents need to evaluate reasoning and evaluators when no trusted reference answer exists.</div>
+    <div class="future-item"><b>Self-generated tasks</b><br>Models can construct curricula near their capability frontier, creating synthetic-data flywheels.</div>
+    <div class="future-item"><b>Open-ended evolution</b><br>Novelty and diversity objectives may discover qualitatively new strategies beyond direct reward maximization.</div>
+    <div class="future-item"><b>Continual learning</b><br>Deployment could become part of training, provided updates remain stable, safe, private, and provenance-aware.</div>
+    <div class="future-item"><b>Adaptive compute</b><br>Agents should learn how much search, verification, retrieval, and revision each task is worth.</div>
+    <div class="future-item"><b>Intelligence per watt</b><br>Capability must be evaluated against energy and hardware cost as agentic workloads multiply inference calls.</div>
+    <div class="future-item"><b>Hybrid local–cloud inference</b><br>Small local models may handle routine/private work while cloud systems receive expensive, difficult trajectories.</div>
+  </div>
+  <div class="flow reveal" style="margin-top:22px"><div>Generate tasks</div><div>Solve</div><div>Verify</div><div>Train</div><div>Evaluate</div><div>Generate harder</div></div>
+  <div class="grid reveal">
+    <article class="card"><h3>Absolute Zero</h3><p>Explores self-play-like reasoning without human-provided task data, pushing toward autonomous curriculum generation.</p><a href="https://arxiv.org/abs/2505.03335" target="_blank" rel="noopener">Paper ↗</a></article>
+    <article class="card"><h3>Darwin Gödel Machine</h3><p>Investigates agents that modify parts of their own systems and empirically evaluate changes, connecting open-ended search with software self-improvement.</p><a href="https://arxiv.org/abs/2505.22954" target="_blank" rel="noopener">Paper ↗</a></article>
+    <article class="card"><h3>Intelligence per Watt</h3><p>Reframes model progress around useful capability relative to power consumption and practical deployment efficiency.</p><a href="https://arxiv.org/abs/2511.07885" target="_blank" rel="noopener">Paper ↗</a></article>
+  </div>
+</div>
+</section>
+
+<section id="papers">
+<div class="container">
+  <div class="section-head"><div><span class="kicker">09 · Research library</span><h2>Primary papers & technical reports</h2></div><p class="lede">Search the papers discussed across the handbook. Links point to primary sources whenever possible.</p></div>
+  <div class="searchbar"><input id="paperSearch" placeholder="Search papers, methods, benchmarks…"><select id="paperTopic"><option value="all">All topics</option><option>Scaling</option><option>Verification</option><option>Agents</option><option>Planning</option><option>Training</option><option>Search</option><option>Evaluation</option><option>Future</option></select></div>
+  <div class="paper-grid" id="paperGrid"></div>
+</div>
+</section>
+
+<section id="videos">
+<div class="container">
+  <div class="section-head"><div><span class="kicker">10 · Lecture series</span><h2>Stanford CS329A video path</h2></div><p class="lede">Use the lecture sequence as a guided curriculum. Click a card to open the video without leaving the handbook.</p></div>
+  <div class="video-grid" id="videoGrid"></div>
+</div>
+</section>
+</main>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-card"><div class="modal-top"><b id="modalTitle">Lecture</b><button class="icon" id="closeModal">✕</button></div><div class="player" id="player"></div></div>
+</div>
+
+<footer>
+<div class="container footer-grid">
+  <div><b>Self-Improving AI Agents — Interactive Handbook</b><p>Independent educational synthesis based on the Stanford CS329A lecture themes and primary research papers. Not an official Stanford publication.</p></div>
+  <div><b>Core loop</b><p class="formula">Explore → Verify → Act → Learn → Evaluate → Repeat</p><p>Research results should be interpreted within the benchmark, model, compute, and evaluation settings reported by their authors.</p></div>
+</div>
+</footer>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const root=document.documentElement;
+$('#theme').onclick=()=>{root.dataset.theme=root.dataset.theme==='dark'?'light':'dark';localStorage.setItem('theme',root.dataset.theme)};
+if(localStorage.getItem('theme')) root.dataset.theme=localStorage.getItem('theme');
+addEventListener('scroll',()=>{$('#progress').style.width=(scrollY/(document.documentElement.scrollHeight-innerHeight)*100)+'%'});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on')}),{threshold:.08}); $$('.reveal').forEach(x=>io.observe(x));
+
+function passK(){
+  const p=+$('#pRange').value/100,k=+$('#kRange').value;
+  $('#pVal').textContent=Math.round(p*100)+'%'; $('#kVal').textContent=k;
+  const val=1-Math.pow(1-p,k); $('#passMetric').textContent=(val*100).toFixed(1)+'%';
+  const ks=[1,2,4,8,16,32,64,100].filter(x=>x<=Math.max(8,k*1.25));
+  $('#passBars').innerHTML=ks.map(x=>{const y=(1-Math.pow(1-p,x))*100;return '<div class="bar" title="K='+x+': '+y.toFixed(1)+'%" style="height:'+Math.max(2,y)+'%"></div>'}).join('');
+} $('#pRange').oninput=$('#kRange').oninput=passK; passK();
+
+function horizon(){
+ const p=+$('#stepRange').value/100,n=+$('#stepsRange').value,v=Math.pow(p,n);
+ $('#stepVal').textContent=(p*100).toFixed(1).replace('.0','')+'%';$('#stepsVal').textContent=n;
+ $('#horizonMetric').textContent=(v*100).toFixed(1)+'%';$('#riskFill').style.width=(v*100)+'%';
+} $('#stepRange').oninput=$('#stepsRange').oninput=horizon; horizon();
+
+$('#planTabs').onclick=e=>{const b=e.target.closest('.tab');if(!b)return;$$('.tab').forEach(x=>x.classList.remove('active'));$$('.tab-panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');$('#'+b.dataset.tab).classList.add('active')};
+
+const papers=[
+['Scaling','Large Language Monkeys','Repeated sampling and inference-time scaling','https://arxiv.org/abs/2407.21787'],
+['Scaling','Scaling LLM Test-Time Compute Optimally','Parallel sampling vs sequential revision','https://arxiv.org/abs/2408.03314'],
+['Scaling','Archon','Inference architecture search','https://arxiv.org/abs/2409.15254'],
+['Verification','Training Verifiers to Solve Math Word Problems','Outcome verification on GSM8K','https://arxiv.org/abs/2110.14168'],
+['Verification','Let’s Verify Step by Step','PRM800K and process supervision','https://arxiv.org/abs/2305.20050'],
+['Verification','Math-Shepherd','Automated process supervision','https://arxiv.org/abs/2312.08935'],
+['Verification','Weak Verifiers / Weaver','Verifier ensembles and distillation','https://arxiv.org/abs/2506.18203'],
+['Agents','ReAct','Reasoning and acting with tools','https://arxiv.org/abs/2210.03629'],
+['Agents','RLEF','Learning from execution feedback','https://arxiv.org/abs/2410.02089'],
+['Agents','Constitutional AI','AI critique from written principles','https://arxiv.org/abs/2212.08073'],
+['Planning','LATS','Language Agent Tree Search','https://arxiv.org/abs/2310.04406'],
+['Planning','SPRINT','Parallel reasoning plans','https://arxiv.org/abs/2506.05745'],
+['Planning','SWiRL','Synthetic multi-step tool trajectories','https://arxiv.org/abs/2504.04736'],
+['Planning','ADaPT','Adaptive planning and decomposition','https://arxiv.org/abs/2311.05772'],
+['Planning','Wider or Deeper?','Compute allocation across reasoning breadth/depth','https://arxiv.org/abs/2503.04412'],
+['Training','STaR','Self-taught reasoning','https://arxiv.org/abs/2203.14465'],
+['Training','DeepSeekMath','GRPO for mathematical reasoning','https://arxiv.org/abs/2402.03300'],
+['Training','DAPO','Stable long-reasoning RL','https://arxiv.org/abs/2503.14476'],
+['Search','AlphaCode','Massive sampling for competitive coding','https://arxiv.org/abs/2203.07814'],
+['Search','AlphaCode 2','Learned candidate scoring for coding search','https://storage.googleapis.com/deepmind-media/AlphaCode2/AlphaCode2_Tech_Report.pdf'],
+['Search','Search-o1','Reasoning with retrieval triggered by knowledge gaps','https://arxiv.org/abs/2501.05366'],
+['Search','Search-R1','RL for learning when to search','https://arxiv.org/abs/2503.09516'],
+['Evaluation','Measuring AI Ability to Complete Long Software Tasks','METR time-horizon methodology','https://arxiv.org/abs/2503.14499'],
+['Evaluation','GDPval','Economically valuable professional-task evaluation','https://arxiv.org/abs/2510.04374'],
+['Evaluation','DeepScholar-Bench','Generative research synthesis evaluation','https://arxiv.org/abs/2508.20033'],
+['Future','Multiagent Finetuning','Diversity through multi-agent training','https://arxiv.org/abs/2501.05707'],
+['Future','Absolute Zero','Self-generated tasks and autonomous curriculum','https://arxiv.org/abs/2505.03335'],
+['Future','Darwin Gödel Machine','Open-ended self-improving systems','https://arxiv.org/abs/2505.22954'],
+['Future','The AI Scientist','Automating parts of scientific discovery','https://arxiv.org/abs/2408.06292'],
+['Future','Intelligence per Watt','Capability efficiency and hardware-aware evaluation','https://arxiv.org/abs/2511.07885']
+];
+function renderPapers(){
+ const q=$('#paperSearch').value.toLowerCase(),t=$('#paperTopic').value;
+ const rows=papers.filter(p=>(t==='all'||p[0]===t)&&p.join(' ').toLowerCase().includes(q));
+ $('#paperGrid').innerHTML=rows.map(p=>'<article class="paper"><span class="tag">'+p[0]+'</span><h3>'+p[1]+'</h3><p>'+p[2]+'</p><a href="'+p[3]+'" target="_blank" rel="noopener">Primary source ↗</a></article>').join('')||'<p>No matching papers.</p>';
+} $('#paperSearch').oninput=$('#paperTopic').onchange=renderPapers; renderPapers();
+
+const videos=[
+['6YnLB0XbTnI','01 · Course Overview','Scaling laws → agents'],
+['-Ggc37xLj_Y','02 · Test-Time Compute Scaling','Sampling · verifiers · Archon'],
+['p7TdPUcPoik','03 · Robust Verification','ORM · PRM · Math-Shepherd · Weaver'],
+['Lxh9RF5S-K0','04 · Learning from Feedback','ReAct · RLEF · Constitutional AI'],
+['Ml_fp9XkB8Y','05 · Planning & Multi-Step Reasoning','LATS · SPRINT · SWiRL'],
+['yVnmHSAy3ck','06 · Train-Time Scaling / RL','STaR · GRPO · DAPO'],
+['Uni9dqyuuDM','07 · Search & Deep Research Agents','AlphaCode · Search-o1'],
+['8JAqLnTaZu4','08 · Agentic Evaluations','METR · GDPval · DeepScholar'],
+['AyO6wyu4DEg','09 · Future Research Areas','Diversity · meta-verification · local AI']
+];
+$('#videoGrid').innerHTML=videos.map(v=>'<button class="video" data-id="'+v[0]+'" data-title="'+v[1]+'"><img loading="lazy" referrerpolicy="no-referrer" src="https://i.ytimg.com/vi/'+v[0]+'/hqdefault.jpg" alt=""><span><b>'+v[1]+'</b><small>'+v[2]+'</small></span></button>').join('');
+$('#videoGrid').onclick=e=>{const v=e.target.closest('.video');if(!v)return;$('#modalTitle').textContent=v.dataset.title;$('#player').innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+v.dataset.id+'?autoplay=1&rel=0" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture;web-share" allowfullscreen></iframe>';$('#modal').classList.add('open');document.body.style.overflow='hidden'};
+function close(){ $('#modal').classList.remove('open');$('#player').innerHTML='';document.body.style.overflow=''} $('#closeModal').onclick=close;$('#modal').onclick=e=>{if(e.target===$('#modal'))close()};addEventListener('keydown',e=>{if(e.key==='Escape')close()});
+</script>
+</body>
+</html>
